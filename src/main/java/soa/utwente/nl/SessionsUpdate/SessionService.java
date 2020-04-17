@@ -1,43 +1,44 @@
 package soa.utwente.nl.SessionsUpdate;
 
 import org.springframework.stereotype.Service;
+import soa.utwente.nl.SessionsUpdate.Classes.Session;
 import soa.utwente.nl.SessionsUpdate.Exceptions.NotFoundException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SessionService {
-    private static final Map<Integer, Session> sessions = Collections.synchronizedMap(new HashMap<>());
-    private static int idCounter = 1;
+    private static final List<Session> sessions = new ArrayList<>();
 
     public Session createSession(Session session){
-        session.setSessionId(idCounter++);
-        sessions.put(session.getSessionId(), session);
+        sessions.add(session);
         return session;
     }
 
     public Session updateSession(Session session){
-        sessions.put(session.getSessionId(), session);
+        sessions.set(session.getSessionId(), session);
         return session;
     }
 
-    public void deleteSession(Integer id){
-        if(!sessions.containsKey(id)) throw new NotFoundException("Could not find user with id " + id);
-        sessions.entrySet().removeIf(x-> x.getKey().equals(id));
+    public Session getSession(Integer id){
+        return sessions.stream().filter(session -> session.getSessionId() == id).findFirst().orElseThrow(NotFoundException::new);
     }
 
-    public Session getSession(Integer id){
-        if(!sessions.containsKey(id)) throw new NotFoundException("Could not find user with id " + id);
-        return sessions.get(id);
+    public void deleteSession(Integer id){
+        sessions.remove(getSession(id));
     }
 
     public Integer getSessionRequiredNrTAs(Integer id){
-        if(!sessions.containsKey(id)) throw new NotFoundException("Could not find user with id " + id);
-        return sessions.get(id).getRequiredNrTAs();
+        return getSession(id).getRequiredNrTAs();
     }
 
-    public Collection<Session> getSessions(Integer courseId){
-        return (Collection<Session>) sessions.values().stream().filter(x->courseId.equals(x.getCourseId()));
+    public List<Session> getSessionsCourse(Integer courseId){
+        return sessions.stream().filter(session -> session.getCourseId() == courseId).collect(Collectors.toList());
     }
 
+    public boolean updateTAs(int id, List<Integer> assignedTAs){
+        getSession(id).setAssignedTAs(assignedTAs);
+        return true;
+    }
 }

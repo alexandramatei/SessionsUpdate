@@ -1,4 +1,4 @@
-package soa.utwente.nl.SessionsUpdate;
+package soa.utwente.nl.SessionsUpdate.Classes;
 
 import java.sql.Time;
 import java.time.LocalDate;
@@ -16,10 +16,11 @@ public class Session {
     private Integer requiredNrTAs;
     private List<Integer> assignedTAs;
     private Integer courseId;
+    private String location;
 
-
-    @java.beans.ConstructorProperties({"sessionId", "date", "startTime", "endTime", "requiredNrTAs", "assignedTAs", "courseId"})
-    public Session(Integer sessionId, LocalDate date, LocalTime startTime, LocalTime endTime, Integer requiredNrTAs, ArrayList<Integer> assignedTAs, Integer courseId) {
+    @java.beans.ConstructorProperties({"sessionId", "date", "startTime", "endTime", "requiredNrTAs", "assignedTAs", "courseId", "location"})
+    public Session(Integer sessionId, LocalDate date, LocalTime startTime, LocalTime endTime, Integer requiredNrTAs,
+                   ArrayList<Integer> assignedTAs, Integer courseId, String location) {
         this.sessionId = sessionId;
         this.date = date;
         this.startTime = startTime;
@@ -27,6 +28,7 @@ public class Session {
         this.requiredNrTAs = requiredNrTAs;
         this.assignedTAs = assignedTAs;
         this.courseId = courseId;
+        this.location = location;
     }
 
     public Integer getCourseId() {
@@ -82,6 +84,11 @@ public class Session {
     }
 
     public void setAssignedTAs(List<Integer> assignedTAs) {
-        this.assignedTAs = assignedTAs;
+        this.assignedTAs.clear();
+        this.assignedTAs=assignedTAs;
     }
+
+    public String getLocation() { return location; }
+
+    public void setLocation(String location) {this.location = location;}
 }
